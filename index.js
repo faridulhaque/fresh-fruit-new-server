@@ -25,7 +25,19 @@ const client = new MongoClient(uri, {
 const run = async () => {
   try {
     await client.connect();
-    console.log("Database Connected");
+    const fruitCollection = client.db("freshFruit").collection("fruit");
+    app.post("/fruits", async (req, res) => {
+      const fruits = req.body;
+      const result = await fruitCollection.insertOne(fruits);
+      res.send(result);
+    });
+    app.get("/fruit/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = {email: email}
+      const cursor = fruitCollection.find(filter);
+      const fruits = await cursor.toArray();
+      res.send(fruits);
+    });
   } finally {
   }
 };
