@@ -31,12 +31,25 @@ const run = async () => {
       const result = await fruitCollection.insertOne(fruits);
       res.send(result);
     });
+    app.get("/fruits", async (req, res) => {
+      const filter = {};
+      const cursor = fruitCollection.find(filter);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
     app.get("/fruit/:email", async (req, res) => {
       const email = req.params.email;
-      const filter = {email: email}
+      const filter = { email: email };
       const cursor = fruitCollection.find(filter);
       const fruits = await cursor.toArray();
       res.send(fruits);
+    });
+    app.delete("/fruit/del/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const filter = { _id: ObjectId(id) };
+      const result = await fruitCollection.deleteOne(filter);
+      res.send(result);
     });
   } finally {
   }
